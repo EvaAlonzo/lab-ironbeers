@@ -1,9 +1,10 @@
+<div>
+  {{#each newBeer}}
 
-<div class="card" style="width: 18rem;">
-  <div class="card-body">
-      <img src="{{image_url}}" alt="randomBeers">
-    <h5 class="card-title">{{name}}</h5>
-    <p class="card-text">{{description}}</p>
-    <a href="#" class="card-link">{{tagline}}</a>
-  </div>
+    <div>
+      <li>
+        {{> beerpartials this}}
+      </li>
+    </div>
+    {{/each}}
 </div>

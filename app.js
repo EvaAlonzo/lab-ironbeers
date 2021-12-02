@@ -13,38 +13,68 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Register the location for handlebars partials here:
-
+hbs.registerPartials(path.join(__dirname, 'views/partials'))
 // ...
 
 // Add the route handlers here:
+
 app.get('/', (req, res) => {
   res.render('index');
 });
 
-//beers
-app.get('/beers', (req, res) => {
+app.get('/beers', (req, res, next) => {
   punkAPI
-  .getBeers()
-  .then(beersFromAPI => {
-    console.log('Beers from the database: ')
-  res.render('beers', {beersFromAPI})
-  })
-  .catch(error => res.send(error));
-
+    .getBeers()
+    .then(beersFromApi => {
+      //console.log(beersFromApi);
+      res.render('beers', {
+        beersFromApi
+      });
+    })
+    .catch(error => console.log(error));
 });
 
-//random-beers
-app.get('/random-beer', (req, res) => {
-  punkAPI
-  .getRandom()
-  .then(randomBeer => {
-  console.log(randomBeer)
-  res.render('randomBeer', randomBeer[0])
-  })
-  .catch(error => res.send(error));
 
+app.get('/random-beer', (req, res, next) => {
+  let newBeer = {} //objeto
+
+  punkAPI
+    .getRandom()
+    .then(beersFromApi => {
+      //console.log(beersFromApi)
+      newBeer= {
+        name: beersFromApi[0].name,
+        tagline: beersFromApi[0].tagline,
+        description:beersFromApi[0].description,
+        image_url:beersFromApi[0].image_url,
+        foodPairing:beersFromApi[0].food_pairing,
+        brewerTips:beersFromApi[0].brewer_tips
+      }
+      res.render('random-beer', {
+        newBeer:[newBeer]
+      });
+    })
+    .catch(error => console.log(error));
+});
+
+app.get('/beers/:beerId',(req,res,next)=>{
+  punkAPI
+  .getBeer(req.params.beerId)
+  .then(onlyBeer=>{
+    console.log("la unica")
+res.render('beer-details', {
   
-});
+  onlyBeer
+})
+  })
+  .catch(error => console.log(error));
+
+})
+
+
 
 
 app.listen(3000, () => console.log('🏃‍ on port 3000'));
+
+
+
